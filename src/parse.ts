@@ -13,9 +13,9 @@ const ctype = getCtypeSchema().schema.properties;
 // Here, [1,2,3,4,5] means 5 leaves need to be parsed.
 const indexes = [2];
 let result = convertCreToBN(data, indexes);
-console.log('The parsing result is :', result);
+// console.log('The parsing result is :', result);
 
-function convertCreToBN(data: any, leaves: any) {
+export function convertCreToBN(data: any, leaves: any) {
 
   // ContentData - RLP code, compute nonce
   let {nonces, contentData} = compute_rlp_code(data); 

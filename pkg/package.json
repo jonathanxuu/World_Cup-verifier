@@ -1,0 +1,11 @@
+{
+  "name": "rescue",
+  "version": "0.1.0",
+  "files": [
+    "rescue_bg.wasm",
+    "rescue.js",
+    "rescue.d.ts"
+  ],
+  "main": "rescue.js",
+  "types": "rescue.d.ts"
+}

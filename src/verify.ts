@@ -1,8 +1,12 @@
 const miden = require("miden");
+var data = require('./credential.json');
+import {convertCreToBN} from "./parse"
+
 // the program is the world_cup_program, the four teams are :[ 'Brazil', 'Spain', 'England', 'France' ]
 import { program } from "./program";
+let index = [2]
 // This adv_tape is obtained from `parse.ts`
-const adv_tape_string = "3886286942853729027,15654301913020916692,4399823175321485897,8119571599598238192,134,66,114,97,122,105,108,1,12615018311370786513,12049204854409661475,4519128278220129772,1623613697933719523,7449068405041481034,7444863009892133218,10140653980120622565,3342799857244728905";
+const adv_tape_string = convertCreToBN(data, index);
 
 let adv_tape = miden.output_inputs_string("", adv_tape_string, "");
 
