@@ -1,5 +1,69 @@
-export const program = `
-use.std::sys 
+use miden::{Assembler, Program, ProofOptions, StarkProof, verify, VerificationError, Digest};
+mod helpers;
+use helpers::parse::{parse_zkp_result, ZKPRESULT};
+use helpers::world_cup_verify::{do_single_zkp_verify, restore_and_check_digest_hash};
+use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct DigestHelper {
+    user_did: String,
+    ctype: String 
+}
+
+fn main() {
+    // instantiate the assembler
+    let assembler = Assembler::default();
+
+    // this is our world cup event program, we compile it from assembly code
+    let program = assembler.compile(&PROGRAM).unwrap();
+    
+    // =========================== Execution Phrase ===============================
+    // We suppose the User has generated his/her ZKP via zkID Wallet, 
+
+
+    // ========================== User Send ZKP To Us ===========================
+    // User send its ZKP to us, and we saved it in the `./zkp_result.json`
+    // now, we need to parse it into Struct ZKPRESULT 
+    assert_eq!(parse_zkp_result().is_ok(), true, "The User's uploaded zkp is not valid, cannot parse");
+    let parse_result = parse_zkp_result().unwrap();
+    let outputs = parse_result.outputs;
+    let starkproof = parse_result.starkproof;
+    // ========================== Verification Phrase 1 =============================
+    // In the 1st Verification Phrase, we check the validity of user's zkp result
+    let verification_result = do_single_zkp_verify(
+        program,
+        &outputs,
+        starkproof
+    );
+    assert_eq!(verification_result.is_ok(), true, "The User's ZKP doesn't pass the verification");
+    println!("The ZKP passes verification");
+    
+
+    // ========================== Verification Phrase 2 ==============================
+    // In the 2nd Verification Phrase, we restore the roothash, 
+    // and then combine the roothash with user's did, expiration_time, ctype to get the digest_hash
+    // and then check whether this digest_hash is stored on-chain
+
+    // the digest_helper should be offered by the user
+    let digest_helper: DigestHelper = DigestHelper {
+        user_did: String::from("did:zk:0x83B3c7CF3388c96e5D9a8074200e2FBa850cDE7d"),
+        ctype: String::from("0x4394e5a3f6d7e18957d02095d46e37558e2502bce59aacd407b074781d7d6b5b")
+    };
+
+    let digest_hash_exsit = restore_and_check_digest_hash(
+        outputs,
+        digest_helper
+    );
+    println!("The digesthash passes verification");
+
+
+    println!("The digest_hash exist status is : {:?}", digest_hash_exsit);
+}
+
+
+
+
+const PROGRAM: &str = "use.std::sys 
 proc.number_add.4
     dup.0 pop.local.0 push.0 eq
 if.true
@@ -152,5 +216,4 @@ push.12039647118452995642 push.16650728778266705604 push.17754152925651475975 pu
 pushw.mem.100 push.mem.101
     
 exec.sys::finalize_stack
-end
-`
+end";
