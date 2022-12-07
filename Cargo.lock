@@ -536,4 +536,5 @@ dependencies = [
  "miden",
  "serde",
  "serde_json",
+ "sha3",
 ]

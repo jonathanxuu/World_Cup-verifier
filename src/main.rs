@@ -1,14 +1,9 @@
 use miden::{Assembler, Program, ProofOptions, StarkProof, verify, VerificationError, Digest};
 mod helpers;
 use helpers::parse::{parse_zkp_result, ZKPRESULT};
-use helpers::world_cup_verify::{do_single_zkp_verify, restore_and_check_digest_hash};
-use serde::{Deserialize, Serialize};
+use helpers::world_cup_verify::{do_single_zkp_verify, restore_and_check_digest_hash, DigestHelper};
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct DigestHelper {
-    user_did: String,
-    ctype: String 
-}
+
 
 fn main() {
     // instantiate the assembler
@@ -28,6 +23,7 @@ fn main() {
     let parse_result = parse_zkp_result().unwrap();
     let outputs = parse_result.outputs;
     let starkproof = parse_result.starkproof;
+
     // ========================== Verification Phrase 1 =============================
     // In the 1st Verification Phrase, we check the validity of user's zkp result
     let verification_result = do_single_zkp_verify(

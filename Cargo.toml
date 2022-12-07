@@ -10,6 +10,7 @@ miden = {git = "https://github.com/jonathanxuu/miden.git", branch = "dev", defau
 serde = { version = "1.0", default-features = false, features = ["derive"] }
 serde_json = "1.0"
 hex = { version = "0.4", default-features = false, optional = true }
+sha3 = "0.10.6"
 
 [features]
 default = ["std"]
